@@ -1,0 +1,9 @@
+Kotoba dataset attribution
+
+OpenJLPT N5 and N4 vocabulary data
+Source: https://github.com/evanclan/OpenJLPT
+License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+License text: https://creativecommons.org/licenses/by-sa/4.0/
+Changes: adapted to word+reading and first-meaning pairs, exact duplicate spellings removed, and English meanings translated into Indonesian.
+
+JLPT vocabulary levels are community approximations; JLPT does not publish an official word list.

@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#f7f3eb" />
+		<title>Tebak Aksara Jepang</title>
+		<style>
+			:root {
+				font-family:
+					Inter,
+					ui-sans-serif,
+					system-ui,
+					-apple-system,
+					"Segoe UI",
+					sans-serif;
+				color: #22251f;
+				background: #f7f3eb;
+				font-synthesis: none;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				margin: 0;
+				min-height: 100vh;
+				background:
+					radial-gradient(ellipse at 80% 8%, #f1dfca 0, transparent 32%),
+					#f7f3eb;
+			}
+			button {
+				font: inherit;
+			}
+			.wrap {
+				max-width: 1040px;
+				margin: auto;
+				padding: 28px 24px 50px;
+			}
+			.top {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 16px;
+				margin-bottom: 56px;
+			}
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: 11px;
+				font-weight: 800;
+				letter-spacing: -0.03em;
+			}
+			.brand-mark {
+				width: 36px;
+				height: 36px;
+				border-radius: 12px;
+				background: #df6249;
+				color: #fff;
+				display: grid;
+				place-items: center;
+				font-size: 21px;
+			}
+			.top-note {
+				color: #77776f;
+				font-size: 13px;
+			}
+			.hero {
+				max-width: 680px;
+				margin: 0 auto 30px;
+				text-align: center;
+			}
+			.eyebrow {
+				font-size: 12px;
+				font-weight: 800;
+				text-transform: uppercase;
+				letter-spacing: 0.16em;
+				color: #c25a42;
+			}
+			.hero h1 {
+				font-size: clamp(34px, 6vw, 56px);
+				line-height: 1.04;
+				letter-spacing: -0.055em;
+				margin: 13px 0;
+			}
+			.hero p {
+				color: #72736d;
+				line-height: 1.65;
+				margin: 0 auto;
+				max-width: 540px;
+			}
+			.app {
+				max-width: 760px;
+				margin: auto;
+				background: #fffdfa;
+				border: 1px solid #e9e3d8;
+				border-radius: 24px;
+				box-shadow: 0 18px 55px #42331a12;
+				overflow: hidden;
+			}
+			.progress {
+				padding: 22px 28px 0;
+			}
+			.stage-row {
+				display: flex;
+				gap: 8px;
+				justify-content: space-between;
+			}
+			.progress:not(:has(.stage)) {
+				display: none;
+			}
+			.stage {
+				flex: 1;
+				min-width: 0;
+			}
+			.stage-line {
+				height: 5px;
+				border-radius: 9px;
+				background: #ece9e2;
+				margin-bottom: 9px;
+			}
+			.stage.active .stage-line {
+				background: #df6249;
+			}
+			.stage.done .stage-line {
+				background: #78916b;
+			}
+			.stage-name {
+				font-size: 11px;
+				color: #999990;
+				white-space: nowrap;
+			}
+			.stage-nav { display:block; border:0; padding:0; background:transparent; font:inherit; cursor:pointer; }
+			.stage-nav:disabled { cursor:default; }
+			.stage.active .stage-name {
+				color: #bd543e;
+				font-weight: 750;
+			}
+			.stage.done .stage-name {
+				color: #68805c;
+			}
+			.card {
+				padding: 30px 36px 34px;
+			}
+			.meta {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 12px;
+				color: #77776f;
+				font-size: 13px;
+			}
+			.pill {
+				background: #f4efe6;
+				border-radius: 99px;
+				padding: 8px 12px;
+				font-weight: 700;
+				color: #605d55;
+			}
+			.score {
+				font-weight: 750;
+				color: #4e6645;
+			}
+			.timer {
+				font-weight: 800;
+				color: #bd543e;
+				font-variant-numeric: tabular-nums;
+			}
+			.timer-track {
+				height: 6px;
+				margin-top: 14px;
+				overflow: hidden;
+				border-radius: 99px;
+				background: #eee9e1;
+			}
+			.timer-bar {
+				height: 100%;
+				width: 100%;
+				border-radius: inherit;
+				background: #df6249;
+				transition: width 0.2s linear;
+			}
+			.pause-overlay {
+				position: absolute;
+				inset: 0;
+				z-index: 5;
+				display: grid;
+				place-content: center;
+				gap: 12px;
+				text-align: center;
+				background: #fffdfaeb;
+				backdrop-filter: blur(5px);
+			}
+			.pause-overlay strong {
+				font-size: 27px;
+			}
+			.pause-overlay span {
+				color: #77776f;
+			}
+			.pause-button {
+				border: 1px solid #e8e3da;
+				background: #fffdfa;
+				color: #605d55;
+				border-radius: 10px;
+				padding: 9px 14px;
+				font-weight: 750;
+				cursor: pointer;
+			}
+			.pause-button:hover {
+				border-color: #d8755e;
+				color: #a45140;
+			}
+			.app {
+				position: relative;
+			}
+			.prompt {
+				margin: 32px 0 7px;
+				text-align: center;
+				color: #77776f;
+				font-size: 14px;
+			}
+			.glyph {
+				font-size: clamp(80px, 16vw, 128px);
+				line-height: 1.12;
+				text-align: center;
+				font-family:
+					"Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+				margin: 2px 0 25px;
+				color: #252922;
+			}
+			.answers {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 10px;
+			}
+			.answer {
+				border: 1px solid #e8e3da;
+				background: #fff;
+				border-radius: 13px;
+				padding: 15px 10px;
+				cursor: pointer;
+				font-size: 17px;
+				font-weight: 720;
+				color: #33362f;
+				transition:
+					transform 0.12s,
+					border-color 0.12s,
+					background 0.12s;
+			}
+			.answer:hover {
+				border-color: #d8755e;
+				background: #fff8f4;
+				transform: translateY(-2px);
+			}
+			.answer:disabled {
+				cursor: default;
+			}
+			.answer.correct {
+				background: #edf3e9;
+				border-color: #9ab18a;
+				color: #46633d;
+			}
+			.answer.wrong {
+				background: #fcebe6;
+				border-color: #df8974;
+				color: #a94734;
+			}
+			.feedback {
+				min-height: 26px;
+				text-align: center;
+				margin: 15px 0 0;
+				font-size: 14px;
+				font-weight: 650;
+			}
+			.feedback.good {
+				color: #56734a;
+			}
+			.feedback.bad {
+				color: #b34f39;
+			}
+			.bottom {
+				border-top: 1px solid #efebe4;
+				padding: 17px 28px;
+				display: flex;
+				justify-content: space-between;
+				gap: 16px;
+				align-items: center;
+				color: #86867e;
+				font-size: 12px;
+			}
+			.restart {
+				border: 0;
+				background: transparent;
+				color: #a45140;
+				font-size: 12px;
+				font-weight: 750;
+				cursor: pointer;
+				padding: 8px;
+			}
+			.finish {
+				text-align: center;
+				padding: 44px 24px 50px;
+			}
+			.finish-icon {
+				font-size: 60px;
+			}
+			.finish h2 {
+				font-size: 32px;
+				letter-spacing: -0.04em;
+				margin: 12px 0 8px;
+			}
+			.finish p {
+				color: #74746d;
+				line-height: 1.6;
+			}
+			.primary {
+				border: 0;
+				background: #df6249;
+				color: #fff;
+				border-radius: 12px;
+				padding: 13px 21px;
+				font-weight: 750;
+				cursor: pointer;
+				margin-top: 14px;
+			}
+			.primary:hover {
+				background: #c95039;
+			}
+			.hide {
+				display: none !important;
+			}
+			@media (max-width: 560px) {
+				.wrap {
+					padding: 18px 14px 35px;
+				}
+				.top {
+					margin-bottom: 42px;
+				}
+				.top-note {
+					display: none;
+				}
+				.app {
+					border-radius: 19px;
+				}
+				.progress {
+					padding: 18px 18px 0;
+				}
+				.stage-name {
+					font-size: 9px;
+				}
+				.card {
+					padding: 25px 18px 28px;
+				}
+				.answers {
+					grid-template-columns: repeat(2, 1fr);
+				}
+				.bottom {
+					padding: 14px 18px;
+				}
+				.hero p {
+					font-size: 14px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="wrap">
+			<header class="top">
+				<div class="brand">
+					<span class="brand-mark">あ</span> Tebak Aksara Jepang
+				</div>
+				<div class="top-note">Belajar sedikit demi sedikit, tiap hari.</div>
+			</header>
+			<section class="hero">
+				<div class="eyebrow">Latihan interaktif</div>
+				<h1>Seberapa kenal kamu<br />aksara Jepang?</h1>
+				<p>
+					Kenali hiragana, katakana, kosakata, dan kanji lewat pertanyaan acak.
+					Jawab benar untuk mengumpulkan poin dan membuka tahap berikutnya.
+				</p>
+			</section>
+			<section class="app" aria-label="Kuis aksara Jepang">
+				<div id="progress" class="progress"></div>
+				<div id="quiz" class="card">
+					<div class="meta">
+						<span id="question-count" class="pill"></span
+						><span
+							><span id="timer" class="timer">10 detik</span> ·
+							<span id="streak" class="score">🔥 0 streak</span> ·
+							<span id="score" class="score"></span
+						></span>
+					</div>
+					<div class="timer-track" aria-hidden="true">
+						<div id="timer-bar" class="timer-bar"></div>
+					</div>
+					<p id="prompt" class="prompt"></p>
+					<div id="glyph" class="glyph" lang="ja"></div>
+					<div id="answers" class="answers"></div>
+					<p id="feedback" class="feedback" aria-live="polite"></p>
+					<p id="load-error" class="feedback bad" role="alert" hidden></p>
+				</div>
+				<div class="bottom">
+					<span id="hint"></span
+					><span
+						><button class="pause-button" id="pause-toggle" type="button">
+							Ⅱ Stop
+						</button>
+						<button class="restart" id="restart">↻ Mulai ulang</button></span
+					>
+				</div>
+				<div
+					id="pause-overlay"
+					class="pause-overlay hide"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="pause-title"
+				>
+					<strong id="pause-title">Kuis dijeda</strong
+					><span>Timer berhenti dan jawaban dinonaktifkan.</span
+					><button id="resume" class="primary" type="button">Lanjutkan</button>
+				</div>
+				<div id="finish" class="finish hide"></div>
+			</section>
+		</main>
+		<script>
+			const stages = [
+				{
+					name: "Hiragana",
+					prompt: "Bacaan romaji dari karakter ini adalah…",
+					data: [
+						["あ", "a"],
+						["い", "i"],
+						["う", "u"],
+						["え", "e"],
+						["お", "o"],
+						["か", "ka"],
+						["き", "ki"],
+						["く", "ku"],
+						["け", "ke"],
+						["こ", "ko"],
+						["さ", "sa"],
+						["し", "shi"],
+						["す", "su"],
+						["せ", "se"],
+						["そ", "so"],
+						["た", "ta"],
+						["ち", "chi"],
+						["つ", "tsu"],
+						["て", "te"],
+						["と", "to"],
+						["な", "na"],
+						["に", "ni"],
+						["ぬ", "nu"],
+						["ね", "ne"],
+						["の", "no"],
+						["は", "ha"],
+						["ひ", "hi"],
+						["ふ", "fu"],
+						["へ", "he"],
+						["ほ", "ho"],
+						["ま", "ma"],
+						["み", "mi"],
+						["む", "mu"],
+						["め", "me"],
+						["も", "mo"],
+						["や", "ya"],
+						["ゆ", "yu"],
+						["よ", "yo"],
+						["ら", "ra"],
+						["り", "ri"],
+						["る", "ru"],
+						["れ", "re"],
+						["ろ", "ro"],
+						["わ", "wa"],
+						["を", "wo"],
+						["ん", "n"],
+						["が", "ga"],
+						["ぎ", "gi"],
+						["ぐ", "gu"],
+						["げ", "ge"],
+						["ご", "go"],
+						["ざ", "za"],
+						["じ", "ji"],
+						["ず", "zu"],
+						["ぜ", "ze"],
+						["ぞ", "zo"],
+						["だ", "da"],
+						["ぢ", "ji"],
+						["づ", "zu"],
+						["で", "de"],
+						["ど", "do"],
+						["ば", "ba"],
+						["び", "bi"],
+						["ぶ", "bu"],
+						["べ", "be"],
+						["ぼ", "bo"],
+						["ぱ", "pa"],
+						["ぴ", "pi"],
+						["ぷ", "pu"],
+						["ぺ", "pe"],
+						["ぽ", "po"],
+					],
+				},
+				{
+					name: "Katakana",
+					prompt: "Bacaan romaji dari karakter ini adalah…",
+					data: [
+						["ア", "a"],
+            ["イ", "i"],
+						["ウ", "u"],
+						["エ", "e"],
+						["オ", "o"],
+						["カ", "ka"],
+						["キ", "ki"],
+						["ク", "ku"],
+						["ケ", "ke"],
+						["コ", "ko"],
+						["サ", "sa"],
+						["シ", "shi"],
+						["ス", "su"],
+						["セ", "se"],
+						["ソ", "so"],
+						["タ", "ta"],
+						["チ", "chi"],
+						["ツ", "tsu"],
+						["テ", "te"],
+						["ト", "to"],
+						["ナ", "na"],
+						["ニ", "ni"],
+						["ヌ", "nu"],
+						["ネ", "ne"],
+						["ノ", "no"],
+						["ハ", "ha"],
+						["ヒ", "hi"],
+						["フ", "fu"],
+						["ヘ", "he"],
+						["ホ", "ho"],
+						["マ", "ma"],
+						["ミ", "mi"],
+						["ム", "mu"],
+						["メ", "me"],
+						["モ", "mo"],
+						["ヤ", "ya"],
+						["ユ", "yu"],
+						["ヨ", "yo"],
+						["ラ", "ra"],
+						["リ", "ri"],
+						["ル", "ru"],
+						["レ", "re"],
+						["ロ", "ro"],
+						["ワ", "wa"],
+						["ヲ", "wo"],
+						["ン", "n"],
+						["ガ", "ga"],
+						["ギ", "gi"],
+						["グ", "gu"],
+						["ゲ", "ge"],
+						["ゴ", "go"],
+						["ザ", "za"],
+						["ジ", "ji"],
+						["ズ", "zu"],
+						["ゼ", "ze"],
+						["ゾ", "zo"],
+						["ダ", "da"],
+						["ヂ", "ji"],
+						["ヅ", "zu"],
+						["デ", "de"],
+						["ド", "do"],
+						["バ", "ba"],
+						["ビ", "bi"],
+						["ブ", "bu"],
+						["ベ", "be"],
+						["ボ", "bo"],
+						["パ", "pa"],
+						["ピ", "pi"],
+						["プ", "pu"],
+						["ペ", "pe"],
+						["ポ", "po"],
+					],
+				},
+				{
+					name: "Kotoba",
+					prompt: "Apa arti kata bahasa Jepang ini?",
+					vocab: true,
+					data: [
+						["ねこ", "kucing"],
+						["いぬ", "anjing"],
+						["みず", "air"],
+						["やま", "gunung"],
+						["そら", "langit"],
+						["はな", "bunga"],
+						["ほん", "buku"],
+						["ともだち", "teman"],
+						["せんせい", "guru"],
+						["がっこう", "sekolah"],
+						["くるま", "mobil"],
+						["でんしゃ", "kereta"],
+						["りんご", "apel"],
+						["おちゃ", "teh"],
+						["ごはん", "nasi"],
+						["あさ", "pagi"],
+						["よる", "malam"],
+						["あめ", "hujan"],
+						["ゆき", "salju"],
+						["うみ", "laut"],
+						["とり", "burung"],
+						["さかな", "ikan"],
+						["おかね", "uang"],
+						["でんわ", "telepon"],
+						["じかん", "waktu"],
+						["きょう", "hari ini"],
+						["あした", "besok"],
+						["おいしい", "enak"],
+						["かわいい", "imut"],
+						["ありがとう", "terima kasih"],
+						["みせ", "toko"],
+						["えき", "stasiun"],
+						["へや", "kamar"],
+						["つくえ", "meja"],
+						["いす", "kursi"],
+						["かばん", "tas"],
+						["くつ", "sepatu"],
+						["かさ", "payung"],
+						["じてんしゃ", "sepeda"],
+						["びょういん", "rumah sakit"],
+						["ぎんこう", "bank"],
+						["としょかん", "perpustakaan"],
+						["こうえん", "taman"],
+						["いえ", "rumah"],
+						["かぞく", "keluarga"],
+						["おとうさん", "ayah"],
+						["おかあさん", "ibu"],
+						["おにいさん", "kakak laki-laki"],
+						["おねえさん", "kakak perempuan"],
+						["おとうと", "adik laki-laki"],
+						["いもうと", "adik perempuan"],
+						["こども", "anak"],
+						["おとこ", "laki-laki"],
+						["おんな", "perempuan"],
+						["にほん", "Jepang"],
+						["にほんご", "bahasa Jepang"],
+						["えいご", "bahasa Inggris"],
+						["がくせい", "murid / mahasiswa"],
+						["しごと", "pekerjaan"],
+						["あさごはん", "sarapan"],
+						["ひるごはん", "makan siang"],
+						["ばんごはん", "makan malam"],
+						["くだもの", "buah-buahan"],
+						["やさい", "sayuran"],
+						["たまご", "telur"],
+						["にく", "daging"],
+						["ぎゅうにゅう", "susu"],
+						["まいにち", "setiap hari"],
+						["きのう", "kemarin"],
+						["いま", "sekarang"],
+						["あたらしい", "baru"],
+						["ふるい", "lama / tua"],
+						["たかい", "mahal / tinggi"],
+						["やすい", "murah"],
+						["おおきい", "besar"],
+						["ちいさい", "kecil"],
+						["すき", "suka"],
+						["きらい", "tidak suka"],
+						["げんき", "sehat / bersemangat"],
+						["いそがしい", "sibuk"],
+					],
+				},
+				{
+					name: "Kanji",
+					prompt: "Apa arti kanji ini?",
+					kanji: true,
+					data: [
+						["日", "hari / matahari"],
+						["月", "bulan"],
+						["火", "api"],
+						["水", "air"],
+						["木", "pohon"],
+						["金", "emas / uang"],
+						["土", "tanah"],
+						["山", "gunung"],
+						["川", "sungai"],
+						["田", "sawah"],
+						["人", "orang"],
+						["口", "mulut"],
+						["目", "mata"],
+						["耳", "telinga"],
+						["手", "tangan"],
+						["足", "kaki"],
+						["力", "kekuatan"],
+						["大", "besar"],
+						["小", "kecil"],
+						["中", "dalam / tengah"],
+						["上", "atas"],
+						["下", "bawah"],
+						["左", "kiri"],
+						["右", "kanan"],
+						["本", "buku / asal"],
+						["学", "belajar"],
+						["生", "hidup / murid"],
+						["先", "depan / lebih dulu"],
+						["年", "tahun"],
+						["時", "waktu / jam"],
+						["食", "makan"],
+						["見", "melihat"],
+						["行", "pergi"],
+						["白", "putih"],
+						["赤", "merah"],
+						["青", "biru"],
+						["雨", "hujan"],
+						["花", "bunga"],
+						["魚", "ikan"],
+						["犬", "anjing"],
+					],
+				},
+			];
+			const moreKotoba = [
+				["きょうしつ", "ruang kelas"],
+				["しょくどう", "kantin"],
+				["まど", "jendela"],
+				["いりぐち", "pintu masuk"],
+				["でぐち", "pintu keluar"],
+				["だいどころ", "dapur"],
+				["にわ", "halaman"],
+				["みち", "jalan"],
+				["まち", "kota kecil"],
+				["むら", "desa"],
+				["ちず", "peta"],
+				["きっぷ", "tiket"],
+				["ひこうき", "pesawat"],
+				["ふね", "kapal"],
+				["ちかてつ", "kereta bawah tanah"],
+				["ばす", "bus"],
+				["たくしー", "taksi"],
+				["でんき", "listrik"],
+				["かぎ", "kunci"],
+				["さいふ", "dompet"],
+				["とけい", "jam"],
+				["めがね", "kacamata"],
+				["ぼうし", "topi"],
+				["てぶくろ", "sarung tangan"],
+				["まふらー", "syal"],
+				["せっけん", "sabun"],
+				["はぶらし", "sikat gigi"],
+				["かがみ", "cermin"],
+				["ふとん", "futon"],
+				["べっど", "tempat tidur"],
+				["れいぞうこ", "kulkas"],
+				["せんたく", "mencuci pakaian"],
+				["せんたくき", "mesin cuci"],
+				["そうじ", "bersih-bersih"],
+				["そうじき", "penyedot debu"],
+				["えあこん", "pendingin ruangan"],
+				["てれび", "televisi"],
+				["らじお", "radio"],
+				["ぱそこん", "komputer"],
+				["かめら", "kamera"],
+				["しゃしん", "foto"],
+				["おんがく", "musik"],
+				["うた", "lagu"],
+				["え", "gambar"],
+				["しんぶん", "koran"],
+				["ざっし", "majalah"],
+				["てがみ", "surat"],
+				["はがき", "kartu pos"],
+				["ぺん", "pena"],
+				["えんぴつ", "pensil"],
+				["けしごむ", "penghapus"],
+				["じしょ", "kamus"],
+				["かみ", "kertas"],
+				["ふうとう", "amplop"],
+				["もんだい", "soal / masalah"],
+				["こたえ", "jawaban"],
+				["しつもん", "pertanyaan"],
+				["べんきょう", "belajar"],
+				["しゅくだい", "pekerjaan rumah"],
+				["じゅぎょう", "pelajaran"],
+				["やくそく", "janji"],
+				["かいぎ", "rapat"],
+				["かいしゃ", "perusahaan"],
+				["こうじょう", "pabrik"],
+				["びじゅつかん", "museum seni"],
+				["はくぶつかん", "museum"],
+				["えいが", "film"],
+				["えいがかん", "bioskop"],
+				["りょこう", "perjalanan"],
+				["しゅっちょう", "perjalanan dinas"],
+				["ちゅうしゃじょう", "tempat parkir"],
+				["しんごう", "lampu lalu lintas"],
+				["こうさてん", "persimpangan"],
+				["みぎ", "kanan"],
+				["ひだり", "kiri"],
+				["まえ", "depan"],
+				["うしろ", "belakang"],
+				["となり", "sebelah"],
+				["ちかく", "dekat"],
+				["とおく", "jauh"],
+				["うえ", "atas"],
+				["した", "bawah"],
+				["そば", "di samping"],
+				["あいだ", "di antara"],
+				["はる", "musim semi"],
+				["なつ", "musim panas"],
+				["あき", "musim gugur"],
+				["ふゆ", "musim dingin"],
+				["はれ", "cuaca cerah"],
+				["くもり", "cuaca berawan"],
+				["かぜ", "angin"],
+				["ゆうがた", "sore"],
+				["まよなか", "tengah malam"],
+				["あさって", "lusa"],
+				["まいあさ", "setiap pagi"],
+				["まいばん", "setiap malam"],
+				["らいしゅう", "minggu depan"],
+				["せんしゅう", "minggu lalu"],
+				["こんしゅう", "minggu ini"],
+				["らいげつ", "bulan depan"],
+			];
+			stages[2].data.push(...moreKotoba);
+			// Hiragana dan Katakana memakai 60 soal per tahap, diacak tanpa duplikasi.
+			stages[0].data = stages[0].data.slice(0, 60);
+			stages[1].data = stages[1].data.slice(0, 60);
+			const stagePoints = stages.map((s) => s.data.length * 2);
+			const stageTimes = stages.map((stage) =>
+				stage.name === "Kotoba" ? 20 : stage.name === "Kanji" ? 30 : 10,
+			);
+			const SAVE_KEY = "tebakAksaraJepangProgressV1";
+			let stageIndex = 0,
+				current = null,
+				currentIndex = null,
+				seen = new Set(),
+				correctThisStage = 0,
+				scores = stages.map(() => 0),
+				streak = 0,
+				locked = false,
+				timerInterval = null,
+				timeLeft = 10,
+				paused = false;
+			let completedStages = stages.map(() => false);
+			let unlockedStages = stages.map((_, i) => i === 0);
+			let stageStates = stages.map(() => null);
+			let questionTimeLimit = 10;
+			const $ = (id) => document.getElementById(id);
+			function saveProgress() {
+				try {
+					stageStates[stageIndex] = { seen: [...seen], correctThisStage };
+					localStorage.setItem(
+						SAVE_KEY,
+						JSON.stringify({
+							stageIndex,
+							seen: [...seen],
+							correctThisStage,
+							scores,
+							streak,
+							completedStages,
+							unlockedStages,
+							stageStates,
+						}),
+					);
+				} catch (error) {
+					console.warn("Progres tidak dapat disimpan di browser:", error);
+				}
+			}
+			function loadProgress() {
+				try {
+					const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+					if (
+						!saved ||
+						!Number.isInteger(saved.stageIndex) ||
+						saved.stageIndex < 0 ||
+						saved.stageIndex >= stages.length ||
+						!Array.isArray(saved.scores) ||
+						saved.scores.length !== stages.length
+					)
+						return;
+					stageIndex = saved.stageIndex;
+					completedStages = Array.isArray(saved.completedStages)
+						? stages.map((_, i) => Boolean(saved.completedStages[i]) || i < stageIndex)
+						: stages.map((_, i) => i < stageIndex);
+					unlockedStages = Array.isArray(saved.unlockedStages)
+						? stages.map((_, i) => Boolean(saved.unlockedStages[i]) || i <= stageIndex || completedStages[i])
+						: stages.map((_, i) => i <= stageIndex || completedStages[i]);
+					stageStates = Array.isArray(saved.stageStates)
+						? stages.map((_, i) => saved.stageStates[i] || null)
+						: stages.map(() => null);
+					scores = saved.scores.map((score, i) =>
+						Math.max(0, Math.min(stagePoints[i], Number(score) || 0)),
+					);
+					streak = Math.max(0, Number(saved.streak) || 0);
+					const activeSavedState = stageStates[stageIndex];
+					correctThisStage = Math.max(
+						0,
+						Math.min(
+							stages[stageIndex].data.length,
+							Number(activeSavedState?.correctThisStage ?? saved.correctThisStage) || 0,
+						),
+					);
+					seen = new Set(
+						(Array.isArray(activeSavedState?.seen ?? saved.seen) ? (activeSavedState?.seen ?? saved.seen) : []).filter(
+							(index) =>
+								Number.isInteger(index) &&
+								index >= 0 &&
+								index < stages[stageIndex].data.length,
+						),
+					);
+					// Versi lama ikut menyimpan soal aktif. Hapus entri terakhir yang belum terjawab.
+					while (seen.size > correctThisStage) {
+						seen.delete([...seen].at(-1));
+					}
+					if (seen.size !== correctThisStage) {
+						seen.clear();
+						correctThisStage = 0;
+						scores[stageIndex] = 0;
+					}
+				} catch (error) {
+					console.warn("Progres tersimpan tidak dapat dibaca:", error);
+				}
+			}
+			function shuffle(arr) {
+				for (let i = arr.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[arr[i], arr[j]] = [arr[j], arr[i]];
+				}
+				return arr;
+			}
+			function renderProgress() {
+				$("progress").innerHTML = stages
+					.map(
+						(s, i) => {
+							const canVisit = unlockedStages[i] && i !== stageIndex;
+							return `<div class="stage ${i === stageIndex ? "active" : completedStages[i] ? "done" : ""}"><div class="stage-line"></div><button class="stage-name stage-nav" type="button" data-stage="${i}" ${canVisit ? "" : "disabled"}>${s.name}</button></div>`;
+						},
+					)
+					.join("");
+				$("progress").querySelectorAll("[data-stage]").forEach((button) => {
+					if (!button.disabled) button.addEventListener("click", () => visitStage(Number(button.dataset.stage)));
+				});
+			}
+			function visitStage(index) {
+				const isNextUnlockedStage = index === stageIndex + 1;
+				if (index < 0 || index >= stages.length || (!unlockedStages[index] && !isNextUnlockedStage) || index === stageIndex) return;
+				unlockedStages[index] = true;
+				stopTimer();
+				saveProgress();
+				stageIndex = index;
+				const state = stageStates[index] || { seen: [], correctThisStage: 0 };
+				seen = new Set(state.seen || []);
+				correctThisStage = state.correctThisStage || 0;
+				$("finish").classList.add("hide");
+				$("quiz").classList.remove("hide");
+				nextQuestion();
+			}
+			function stopTimer() {
+				if (timerInterval !== null) clearInterval(timerInterval);
+				timerInterval = null;
+			}
+			function startTimer(reset = true) {
+				if (paused) return;
+				stopTimer();
+				questionTimeLimit = stageTimes[stageIndex];
+				if (reset) timeLeft = questionTimeLimit;
+				$("timer").textContent = `${timeLeft} detik`;
+				$("timer-bar").style.width = `${(timeLeft / questionTimeLimit) * 100}%`;
+				timerInterval = setInterval(() => {
+					timeLeft--;
+					$("timer").textContent = `${timeLeft} detik`;
+					$("timer-bar").style.width = `${(timeLeft / questionTimeLimit) * 100}%`;
+					if (timeLeft <= 0) {
+						stopTimer();
+						handleWrong(null, true);
+					}
+				}, 1000);
+			}
+			function nextQuestion() {
+				stopTimer();
+				if (paused) return;
+				$("load-error").hidden = true;
+				locked = false;
+				const stage = stages[stageIndex];
+				if (correctThisStage >= stage.data.length) {
+					advanceStage();
+					return;
+				}
+				const available = stage.data
+					.map((item, index) => ({ item, index }))
+					.filter(({ index }) => !seen.has(index));
+				if (!available.length) {
+					// Pulihkan sesi lama/korup agar kuis tidak berhenti pada daftar soal kosong.
+					seen.clear();
+					correctThisStage = 0;
+					scores[stageIndex] = 0;
+					saveProgress();
+					return nextQuestion();
+				}
+				const { index: i } =
+					available[Math.floor(Math.random() * available.length)];
+				currentIndex = i;
+				current = stage.data[i];
+				$("question-count").textContent =
+					`Soal ${correctThisStage + 1} dari ${stage.data.length}`;
+				$("score").textContent =
+					`${scores[stageIndex]} / ${stagePoints[stageIndex]} poin`;
+				$("streak").textContent = `🔥 ${streak} streak`;
+				$("prompt").textContent = stage.prompt;
+				$("glyph").textContent = current[0];
+				$("feedback").textContent = "";
+				$("feedback").className = "feedback";
+				const options = makeOptions(stage, i);
+				$("answers").innerHTML = "";
+				options.forEach((value) => {
+					const b = document.createElement("button");
+					b.className = "answer";
+					b.textContent = value;
+					b.addEventListener("click", () => answer(value, b));
+					$("answers").appendChild(b);
+				});
+				$("hint").textContent = stage.vocab
+					? "Pilih arti kata yang tepat."
+					: stage.kanji
+						? "Pilih arti kanji yang tepat."
+						: "Pilih cara baca romaji yang tepat.";
+				$("finish").classList.add("hide");
+				$("quiz").classList.remove("hide");
+				renderProgress();
+				saveProgress();
+				startTimer();
+			}
+			function makeOptions(stage, index) {
+				const answer = stage.data[index][1];
+				const distractors = shuffle([
+					...new Set(stage.data.filter((_, i) => i !== index).map((x) => x[1])),
+				]).slice(0, 3);
+				return shuffle([answer, ...distractors]);
+			}
+			function answer(value, button) {
+				if (locked || paused) return;
+				locked = true;
+				stopTimer();
+				document
+					.querySelectorAll(".answer")
+					.forEach((b) => (b.disabled = true));
+				const feedback = $("feedback");
+				if (value === current[1]) {
+					button.classList.add("correct");
+					seen.add(currentIndex);
+					correctThisStage++;
+					streak++;
+					scores[stageIndex] = Math.min(
+						stagePoints[stageIndex],
+						scores[stageIndex] + 2,
+					);
+					feedback.textContent = `Benar! +2 poin · streak ${streak} 🔥`;
+					feedback.className = "feedback good";
+					$("streak").textContent = `🔥 ${streak} streak`;
+					$("score").textContent =
+						`${scores[stageIndex]} / ${stagePoints[stageIndex]} poin`;
+					saveProgress();
+					setTimeout(nextQuestion, 650);
+				} else {
+					handleWrong(button, false, true);
+				}
+			}
+			function handleWrong(button, timedOut, alreadyLocked = false) {
+				if (paused || (locked && !alreadyLocked)) return;
+				locked = true;
+				stopTimer();
+				document.querySelectorAll(".answer").forEach((b) => {
+					b.disabled = true;
+					if (b.textContent === current[1]) b.classList.add("correct");
+				});
+				if (button) button.classList.add("wrong");
+				streak = 0;
+				$("streak").textContent = "🔥 0 streak";
+				scores[stageIndex] = Math.max(
+					0,
+					Math.min(stagePoints[stageIndex], scores[stageIndex] - 4),
+				);
+				$("score").textContent =
+					`${scores[stageIndex]} / ${stagePoints[stageIndex]} poin`;
+				const feedback = $("feedback");
+				feedback.textContent = timedOut
+					? `Waktu habis! Jawabannya: ${current[1]}. Streak direset. -4 poin dan mundur 2 soal.`
+					: `Belum tepat. Jawabannya: ${current[1]}. Streak direset. -4 poin dan mundur 2 soal.`;
+				feedback.className = "feedback bad";
+				setTimeout(() => {
+					const stage = stages[stageIndex];
+					const targetProgress = Math.max(0, correctThisStage - 2);
+					const previousCorrect = [...seen].filter(
+						(index) => index !== currentIndex,
+					);
+					seen = new Set(previousCorrect.slice(0, targetProgress));
+					correctThisStage = seen.size;
+					saveProgress();
+					nextQuestion();
+				}, 1500);
+			}
+			function advanceStage() {
+				stopTimer();
+				completedStages[stageIndex] = true;
+				if (stageIndex + 1 < stages.length) unlockedStages[stageIndex + 1] = true;
+				saveProgress();
+				renderProgress();
+				$("quiz").classList.add("hide");
+				$("finish").classList.remove("hide");
+				$("progress").innerHTML = stages
+					.map(
+						(s, i) =>
+							`<div class="stage ${i <= stageIndex ? "done" : ""}"><div class="stage-line"></div><div class="stage-name">${s.name}</div></div>`,
+					)
+					.join("");
+				if (stageIndex < stages.length - 1) {
+					const nextStage = stages[stageIndex + 1];
+					$("finish").innerHTML =
+						`<div class="finish-icon">🎉</div><h2>Tahap ${stages[stageIndex].name} selesai!</h2><p>Skor tahap ini: <strong>${scores[stageIndex]} dari ${stagePoints[stageIndex]} poin</strong>.<br>Mau lanjut ke ${nextStage.name}?</p><button class="primary" id="continue-stage" type="button">Lanjut ke ${nextStage.name}</button> <button class="pause-button" id="stop-after-stage" type="button">Tidak, berhenti dulu</button>`;
+					$("continue-stage").addEventListener("click", continueStage);
+					$("stop-after-stage").addEventListener("click", stopAfterStage);
+					saveProgress();
+					return;
+				}
+				$("progress").innerHTML = stages
+					.map(
+						(s) =>
+							`<div class="stage done"><div class="stage-line"></div><div class="stage-name">${s.name}</div></div>`,
+					)
+					.join("");
+				$("finish").innerHTML =
+					`<div class="finish-icon">🎉</div><h2>すごい！ Semua selesai!</h2><p>Kamu menuntaskan semua tahap. Total nilai:<br><strong>${scores.reduce((a, b) => a + b, 0)} dari ${stagePoints.reduce((a, b) => a + b, 0)} poin</strong>.</p><button class="primary" onclick="restart()">Main lagi</button>`;
+				try {
+					localStorage.removeItem(SAVE_KEY);
+				} catch (error) {
+					console.warn("Progres selesai tidak dapat dihapus:", error);
+				}
+			}
+			function continueStage() {
+				visitStage(stageIndex + 1);
+			}
+			function stopAfterStage() {
+				$("finish").innerHTML =
+					`<div class="finish-icon">🌸</div><h2>Progres tersimpan</h2><p>Kamu berhenti setelah tahap ${stages[stageIndex].name}. Nanti kamu bisa lanjut dari sini.</p><button class="primary" onclick="restart()">Mulai dari awal</button>`;
+				saveProgress();
+			}
+			function restart() {
+				paused = false;
+				$("pause-overlay").classList.add("hide");
+				$("pause-toggle").textContent = "Ⅱ Stop";
+				stageIndex = 0;
+				completedStages = stages.map(() => false);
+				unlockedStages = stages.map((_, i) => i === 0);
+				stageStates = stages.map(() => null);
+				current = null;
+				seen.clear();
+				correctThisStage = 0;
+				scores = stages.map(() => 0);
+				streak = 0;
+				try {
+					localStorage.removeItem(SAVE_KEY);
+				} catch (error) {
+					console.warn("Progres tidak dapat dihapus:", error);
+				}
+				nextQuestion();
+			}
+			function togglePause(shouldPause = !paused) {
+				if (shouldPause === paused) return;
+				if (!paused && locked) return;
+				paused = shouldPause;
+				if (paused) {
+					stopTimer();
+					document.querySelectorAll(".answer").forEach((button) => {
+						button.disabled = true;
+					});
+					$("pause-overlay").classList.remove("hide");
+					$("pause-toggle").textContent = "▶ Lanjut";
+				} else {
+					$("pause-overlay").classList.add("hide");
+					$("pause-toggle").textContent = "Ⅱ Stop";
+					nextQuestion();
+				}
+			}
+			$("pause-toggle").addEventListener("click", () => togglePause());
+			$("resume").addEventListener("click", () => togglePause(false));
+			$("restart").addEventListener("click", restart);
+			window.restart = restart;
+			try {
+				if (!stages.length || stages.some((stage) => !stage.data?.length)) {
+					throw new Error("Data soal tidak ditemukan.");
+				}
+				loadProgress();
+				nextQuestion();
+			} catch (error) {
+				console.error("Kuis gagal dimuat:", error);
+				$("load-error").textContent =
+					"Kuis gagal dimuat. Muat ulang halaman; jika masih terjadi, buka file index.html dari folder proyek.";
+				$("load-error").hidden = false;
+			}
+		</script>
+	</body>
+</html>
